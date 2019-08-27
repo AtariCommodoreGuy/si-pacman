@@ -5,3 +5,13 @@ application.linux64
 application.windows32
 application.windows64
 application.macosx
+sketchbook/main/sprites/death/
+sketchbook/main/sprites/fruit/
+sketchbook/main/sprites/ghosts/
+sketchbook/main/sprites/pacman/
+sketchbook/examples
+sketchbook/libraries
+sketchbook/modes
+sketchbook/templates
+sketchbook/tools
+*.xcf
