@@ -106,9 +106,7 @@ class GhostRow {
     
     if (!this.is_moving_down) {
 
-        
-        
-        if (collision || force_down) {
+        if (this.has_collided() || force_down) {
           this.is_moving_down = true;
           this.is_moving_right = !this.is_moving_right; 
         }

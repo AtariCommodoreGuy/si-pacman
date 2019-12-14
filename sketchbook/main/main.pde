@@ -13,7 +13,7 @@ int screen_width = 500;
 int screen_height = 500;
 Frufo froof = null;
 
-float frufo_p = 10.0;
+float frufo_p = 50.0;
 
 int frame_count = 0;
 int frame_update = 29;
@@ -121,19 +121,22 @@ public void draw_ghosts() {
   
   boolean move_down = false;
   
+  //set the ghost row direction
   for(int i = 0; i < 4; i++) {
 
     rows[i].set_direction(false);
     
+    //if one row is moving down, quit
     if (rows[i].is_moving_down) {
       move_down = true;
       break;
     }    
   }
  
+  //re-iterate the rows, forcing all of them to move down
   for(int i = 0; i < 4; i++) {
     
-    if (move_down)
+    if (move_down && !rows[i].is_moving_down)
       rows[i].set_direction(move_down);
 
     rows[i].update();
