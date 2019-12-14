@@ -1,6 +1,7 @@
 class GhostRow {
   
-  PImage[] sprites;
+  PImage[] sprites = new PImage[6];
+  Bawndingbawx[] sprite_boxes = new Bawndingbawx[11];
   int x;
   int y;
   int cur_sprite = 0;
@@ -19,27 +20,44 @@ class GhostRow {
     x = start_x; 
     y = start_y;
     row_length = cell_width * count;
-    sprites = new PImage[6];
     ghost_count = count;
     
-    for(int i = 0; i < 6; i++)
-      sprites[i] = sprite_list[start_sprite + i]; 
+    for(int i = 0; i < 6; i++) 
+      sprites[i] = sprite_list[start_sprite + i];
+      
+    for (int i = 0; i < count; i++)
+      sprite_boxes[i] = new Bawndingbawx(x + i * 40, y, 32);    
+    
   }
   
   boolean is_edge_collide() {
     
-    if (x + row_length > screen_width)
-      return true;
+    Bawndingbawx left_bawx = null;
+    
+    Bawndingbawx right_bawx = null;
+    
+    for(int i = 0; i < sprite_boxes.length; i++) {
+      if (sprite_boxes[i] != null) {
+        if (left_bawx == null)
+          left_bawx = sprite_boxes[i];
+        right_bawx = sprite_boxes[i];
+      }
       
-    if (x - 8 < 0)
+    }
+    if (left_bawx == null)
+      return false;
+      println(right_bawx.right, screen_width);
+    
+    if (left_bawx.left < 5 && !this.is_moving_right)
+      return true;
+    
+    if (right_bawx.right > screen_width-5 && this.is_moving_right)
       return true;
     
     return false;
   }
   
   void update() {
-    
-    this.set_direction();
 
     frame_count = 0;
   
@@ -51,17 +69,46 @@ class GhostRow {
     
     else
       this.moveLeft(); //<>//
-      
-    for(int i = 0; i < ghost_count; i++) {  
-      image(sprites[cur_sprite], x + i * 40, y, 32, 32);
-      }      
+
   }
   
-  void set_direction() {
+  void refresh() {
+    
+    for(int i = 0; i < ghost_count; i++) { 
+      if (sprite_boxes[i] == null)
+        continue;
+      image(sprites[cur_sprite], x + i * 40, y, 32, 32);
+      sprite_boxes[i].update(x + i * 40, y);
+    }     
+  }
+  
+  boolean ghost_heaven(int x, int y) {
+    
+    for(int i = 0; i < sprite_boxes.length; i++) {
+      if (sprite_boxes[i] == null)
+        continue;
+      if (sprite_boxes[i].is_colliding(x, y)) {
+        
+        sprite_boxes[i] = null;
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  boolean has_collided() {
+    
+    return (this.has_collided == 1 && this.is_moving_right) || (this.has_collided == -1 && !this.is_moving_right);  
+    
+  }
+ 
+  void set_direction(boolean force_down) {
     
     if (!this.is_moving_down) {
 
-        if ((this.has_collided == 1 && this.is_moving_right) || (this.has_collided == -1 && !this.is_moving_right)) {
+        
+        
+        if (collision || force_down) {
           this.is_moving_down = true;
           this.is_moving_right = !this.is_moving_right; 
         }
@@ -78,6 +125,7 @@ class GhostRow {
     }
     
   }
+
   void moveRight() {
     
     if (cur_sprite == 0)
